@@ -1,0 +1,114 @@
+<!-- 模板 -->
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <form class="layui-form createForm" lay-filter="createForm" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">上级菜单</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="pid" data-trigger-event="change" id="pidSelect" lay-filter="pidSelect" autocomplete="off" class="layui-input pidSelect">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">功能名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="text" required lay-verify="required" placeholder="请输入功能名称" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">控制器</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="controller" required lay-verify="required" placeholder="请输入控制器名" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">方法</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="method" required lay-verify="required" placeholder="请输入方法名" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">排序</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="orderby" value="50" lay-verify="number" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">是否显示</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="display" lay-skin="switch">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">图标</label>
+                            <div class="layui-input-block">
+                                <input type="input" name="icon" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <input type="hidden" pk name="{$pk}" value="0">
+                                <button class="layui-btn xxx" lay-submit lay-filter="formFilter">立即提交</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 脚本 -->
+<script>
+    layui.use(['form','treeSelect'], function () {
+        var form = layui.form,
+        $ = layui.jquery;
+        var treeSelect = layui.treeSelect;
+        
+        treeSelect.render({
+            elem: '.pidSelect',
+            data: '{:url("$controller/treeSelectOptions")}',
+            type: 'POST',
+            search: false,
+            success: function (d) {}
+        });
+        
+        $("#pidSelect").change(function(){
+            var defaultVal = $(this).val();
+            if (defaultVal) {
+                treeSelect.checkNode('pidSelect', defaultVal);
+            }
+        });
+        
+        form.render();
+
+        //监听提交
+        form.on('submit(formFilter)', function (data) {
+            var pData = data.field;
+            var _this = this;
+            var pk = $(".createForm").find("[pk]").val();
+            var opUrl = pk > 0 ? '{:url("$controller/update")}' : '{:url("$controller/create")}';
+            if (pData.display === "on") {
+                pData.display = 1;
+            } else {
+                pData.display = 0;
+            }
+            $.post(opUrl, pData, function (res) {
+                if (res.code) {
+                    layer.msg(res.msg);
+                    $(_this).closest(".kit-sidebar-body").find(".kit-sidebar-close").click();
+                    renderTable();
+                } else {
+                    layer.msg(res.msg);
+                }
+            }, 'json');
+            return false;
+        });
+    });
+</script>
+<!-- 样式 -->
+<style scoped>
+
+</style>

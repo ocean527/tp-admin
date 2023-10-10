@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ZH-cn">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Login</title>
+        <link rel="stylesheet" href="__STATIC__/admin/lib/layui/css/layui.css">
+        <link rel="stylesheet" href="__STATIC__/admin/css/login.css">
+    </head>
+
+    <body>
+        <div class="kit-login">
+            <div class="kit-login-bg"></div>
+            <div class="kit-login-wapper">
+                <h2 class="kit-login-slogan">欢迎使用 <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;自助服务数据中心</h2>
+                <div class="kit-login-form">
+                    <h4 class="kit-login-title">登录</h4>
+                    <form class="layui-form" autocomplete="off">
+                        <div class="kit-login-row">
+                            <div class="kit-login-col">
+                                <i class="layui-icon">&#xe612;</i>
+                                <span class="kit-login-input">
+                                    <input type="text" name="username" value="{$Think.cookie.r_u|default=''}" lay-verify="required" placeholder="用户名" />
+                                </span>
+                            </div>
+                            <div class="kit-login-col"></div>
+                        </div>
+                        <div class="kit-login-row">
+                            <div class="kit-login-col">
+                                <i class="layui-icon">&#xe64c;</i>
+                                <span class="kit-login-input">
+                                    <input type="password" name="password" value="{$Think.cookie.r_p|substr=0,10|default=''}" lay-verify="required" placeholder="密码" />
+                                </span>
+                            </div>
+                            <div class="kit-login-col"></div>
+                        </div>
+                        <div class="kit-login-row">
+                            <div class="kit-login-col">
+                                <input type="checkbox" name="rememberMe" value="true" {notempty name="Think.cookie.remember"}checked{/notempty} title="记住帐号" lay-skin="primary">
+                            </div>
+                        </div>
+                        <div class="kit-login-row">
+                            <button class="layui-btn kit-login-btn" lay-submit="submit" lay-filter="login_hash">登录</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script src="__STATIC__/admin/lib/polyfill.min.js"></script>
+        <script src="__STATIC__/admin/lib/layui/layui.js"></script>
+        <script>
+            //'axios', 'lodash'
+            layui.use(['layer', 'form'], function () {
+                var form = layui.form,
+                //axios = layui.axios,
+                $ = layui.jquery;
+                //_ = layui.lodash;
+
+                $('#forgot').on('click', function () {
+                    layer.msg('请联系管理员.');
+                });
+                
+                var rememberMe = $("input[name=rememberMe]").val() || false;
+                if (rememberMe) {
+                    setTimeout(function(){
+                        $(".kit-login-btn").click();
+                    },1000);
+                }
+
+                //监听提交
+                form.on('submit(login_hash)', function (data) {
+                    var layIndex = layer.load(2, {
+                        shade: [0.1, '#393D49']
+                    });
+                    $.post("{:url('passport/login')}", data.field, function(result) {
+                        if (result.code == 0) {
+                            layer.msg(result.msg);
+                        } else {
+                            layer.msg(result.msg);
+                            setTimeout(function(){
+                                location.href = result.url;
+                            },2000);
+                        }
+                        layer.close(layIndex);
+                    } ,'json');
+                    return false;
+                });
+            });
+
+            function getParams(href) {
+                var p = href.substr(href.indexOf('?') + 1);
+                if (href === p)
+                    return null;
+                var params = p.split('&');
+                var data = {};
+                _.forEach(params, function (item, index) {
+                    var kv = item.split('=');
+                    var key = kv[0];
+                    var value = kv[1];
+                    data[key] = value;
+                });
+                return data;
+            }
+        </script>
+    </body>
+
+</html>

@@ -1,0 +1,41 @@
+<div class="layui-fluid">
+  <div class="layui-row">
+    <div class="layui-col-xs12">
+      <div class="layui-row">
+        <div class="layui-col-md4">&nbsp;</div>
+        <div class="layui-col-md4">
+          <div class="kit-exception">
+            <?php switch ($code) {?>
+                <?php case 1:?>
+                <i class="layui-icon kit-exception-icon">&#xe60c;</i>
+                <h3 class="kit-exception-title"><?php echo(strip_tags($msg));?></h3>
+                <?php break;?>
+                <?php case 0:?>
+                <i class="layui-icon kit-exception-icon">&#xe69c;</i>
+                <h3 class="kit-exception-title"><?php echo(strip_tags($msg));?></h3>
+                <?php break;?>
+            <?php } ?>
+            <a href="<?php echo($url);?>" id="href" class="layui-btn">跳转(<b id="wait"><?php echo($wait);?></b>)</a>
+          </div>
+        </div>
+        <div class="layui-col-md4">&nbsp;</div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    (function(){
+        var wait = document.getElementById('wait'),
+            href = document.getElementById('href').href;
+        var interval = setInterval(function(){
+            var time = --wait.innerHTML;
+            if(time <= 0) {
+                location.href = href;
+                clearInterval(interval);
+            };
+        }, 1000);
+    })();
+</script>
+<style scoped>
+
+</style>

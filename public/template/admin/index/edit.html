@@ -1,0 +1,90 @@
+<!-- 模板 -->
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <form class="layui-form createForm" lay-filter="createForm" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="user_name" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">真实姓名</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="real_name" required lay-verify="required" placeholder="请输入真实姓名" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">密码</label>
+                            <div class="layui-input-inline">
+                                <input type="password" name="password" required placeholder="请输入密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">性别</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="sex" value="1" title="男">
+                                <input type="radio" name="sex" value="0" title="女">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">禁止登录</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="locked" lay-skin="switch">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <input type="hidden" pk name="user_id" value="0">
+                                <button class="layui-btn xxx" lay-submit lay-filter="formFilter">立即提交</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 脚本 -->
+<script>
+    layui.use(['form','route'], function () {
+        var form = layui.form,
+        $ = layui.jquery;
+        var route = layui.route;
+               
+
+        
+        form.render();
+
+        //监听提交
+        form.on('submit(formFilter)', function (data) {
+            var pData = data.field;
+            var _this = this;
+            var pk = $(".createForm").find("[pk]").val();
+            var opUrl = '{:url("admin/update")}';
+            if (pData.locked === "on") {
+                pData.locked = 1;
+            } else {
+                pData.locked = 0;
+            }
+            $.post(opUrl, pData, function (res) {
+                if (res.code) {
+                    layer.msg(res.msg);
+                    $(_this).closest(".kit-sidebar-body").find(".kit-sidebar-close").click();
+                    route.render("#{:url('index/profile')}");
+                } else {
+                    layer.msg(res.msg);
+                }
+            }, 'json');
+            return false;
+        });
+    });
+</script>
+<!-- 样式 -->
+<style scoped>
+
+</style>

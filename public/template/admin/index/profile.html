@@ -1,0 +1,78 @@
+<div class="layui-fluid">
+  <div class="layui-row">
+    <div class="layui-col-xs12">
+      <div class="layui-card">
+        <div class="layui-card-header">
+          <p>个人中心</p>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-table" lay-even>
+                <colgroup>
+                  <col width="150">
+                  <col>
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <td>用户名</td>
+                    <td>{$user_name}</td>
+                  </tr>
+                  <tr>
+                    <td>真实姓名</td>
+                    <td>{$real_name}</td>
+                  </tr>
+                  <tr>
+                    <td>角色名称</td>
+                    <td>{$role_name}</td>
+                  </tr>
+                  <tr>
+                    <td>是否超管</td>
+                    <td>{eq name="is_open" value="1"}是{else/}否{/eq}</td>
+                  </tr>
+                  <tr>
+                    <td>创建时间</td>
+                    <td>{$create_time}</td>
+                  </tr>
+                  <tr>
+                    <td>本次登录时间</td>
+                    <td>{$now_login_time}</td>
+                  </tr>
+                  <tr>
+                    <td>上次登录时间</td>
+                    <td>{$last_login_time}</td>
+                  </tr>
+                  <tr>
+                    <td>本次登录ip</td>
+                    <td>{$now_login_ip}</td>
+                  </tr>
+                  <tr>
+                    <td>上次登录ip</td>
+                    <td>{$last_login_ip}</td>
+                  </tr>
+                </tbody>
+             </table>
+            <button class="layui-btn layui-btn-sm" id="updateProfileBtn">修改个人信息</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    layui.use(['jquery'],function() {
+        var $ = layui.jquery;
+        $("#updateProfileBtn").on("click", function() {
+            var jsonData = '{$userJson|raw}';
+            layui.sidebar.render({
+                elem: $(this),
+                title: '修改个人信息',
+                shade: true,
+                dynamicRender: true,
+                url: '{:url("index/edit")}',
+                width: '40%',
+                pageData:JSON.parse(jsonData),
+            });
+        });
+    });
+</script>
+<style scoped>
+
+</style>

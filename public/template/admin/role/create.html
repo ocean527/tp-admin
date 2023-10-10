@@ -1,0 +1,101 @@
+<!-- 模板 -->
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <form class="layui-form createForm" lay-filter="createForm" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">角色名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="text" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">权限</label>
+                            <div class="layui-input-block">
+                                <input type="hidden" class="layui-input" data-trigger-event="change" id="menuIdInput" name="menu_id" value="">
+                                <div id="xtreeDiv" style="height:400px; overflow: hidden; overflow-y:scroll; border:1px solid #e6e6e6;padding: 10px 0 25px 5px;"></div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">是否锁定</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="locked" lay-skin="switch">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-block">
+                                <input type="input" name="remark" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <input type="hidden" pk name="{$pk}" value="0">
+                                <button class="layui-btn xxx" lay-submit lay-filter="formFilter">立即提交</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 脚本 -->
+<script>
+    layui.use(['form','xtreeSelect'], function () {
+        var form = layui.form,
+        $ = layui.jquery;
+        var xtreeSelect = layui.xtreeSelect;
+        
+        var xtree = new xtreeSelect({
+            elem: 'xtreeDiv'
+            , form: form
+            , data: '{:url("menu/xtreeSelectOptions")}'
+            , click: function(data) {
+                var menuId = xtree.GetChecked();
+                menuId.sort(function(a,b){
+                    return a-b;
+                });
+                $("#menuIdInput").val(menuId.join(","));
+            }
+            ,done: function() {
+            }
+        });
+        
+        $("#menuIdInput").change(function(){
+            var selected = $("#menuIdInput").val();                
+            if (selected != "") {
+                var selectedArr = selected.split(",");
+                xtree.setChecked(selectedArr);
+            }
+        });
+        
+        form.render();
+
+        //监听提交
+        form.on('submit(formFilter)', function (data) {
+            var pData = data.field;
+            var _this = this;
+            var pk = $(".createForm").find("[pk]").val();
+            console.log(pk)
+            var opUrl = pk > 0 ? '{:url("$controller/update")}' : '{:url("$controller/create")}';
+            $.post(opUrl, pData, function (res) {
+                if (res.code) {
+                    layer.msg(res.msg);
+                    $(_this).closest(".kit-sidebar-body").find(".kit-sidebar-close").click();
+                    renderTable();
+                } else {
+                    layer.msg(res.msg);
+                }
+            }, 'json');
+            return false;
+        });
+    });
+</script>
+<!-- 样式 -->
+<style scoped>
+
+</style>

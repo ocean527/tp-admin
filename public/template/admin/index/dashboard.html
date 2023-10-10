@@ -1,0 +1,98 @@
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md3">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            今日异常消息数量：{$todayExceptionCount}
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md3">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            今日验证码请求数量：{$todayCodeRequestCount}
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md3">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            终端在线数量：{$consoleOnlineCount}
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md3">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            Mqtt在线数量：{$mqttOnlineCount}
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md3">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            终端在线率：{$consoleOnlineRate}
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md3">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            Mqtt在线率：{$mqttOnlineRate}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body" id="exception_statistic" style="height: 400px;"> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__STATIC__/common/echarts.min.js"></script>   
+<script>
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('exception_statistic'));
+    
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '异常统计'
+        },
+        tooltip: {},
+        legend: {
+            data: ['异常数']
+        },
+        xAxis: {
+            data: {$near15DaysArr|raw}
+        },
+        yAxis: {},
+        series: [
+            {
+                name: '异常数',
+                type: 'bar',
+                data: {$exceptionArr},
+                 itemStyle: {
+                    color: '#009688'
+                }
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+<style scoped>
+
+</style>

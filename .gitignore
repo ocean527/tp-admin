@@ -1,0 +1,9 @@
+/nbproject
+/nbproject/private/
+/runtime
+/ftpdata
+/config
+public/parking_image/*
+public/public/*
+public/uploads/*
+vendor/*
